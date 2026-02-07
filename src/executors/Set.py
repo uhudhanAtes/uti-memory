@@ -22,8 +22,8 @@ class Set(Component):
         return {}
 
     def run(self):
-        a = self.redis_db.redis_set_flag(self.key, self.input_data)
-        self.data = ["a"]
+        self.redis_db.redis_set_flag(self.key, self.input_data)
+        self.data = []
         packageModel = build_response_set(context=self)
         return packageModel
 
