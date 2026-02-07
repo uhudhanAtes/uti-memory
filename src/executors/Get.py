@@ -30,7 +30,7 @@ class Get(Component):
             return value
 
     def run(self):
-        self.data = self.try_parse_json(self.redis_db.redis_get_flag(self.key))
+        self.data = self.try_parse_json(self.redis_db.redis_get_flag(self.key)) or []
         packageModel = build_response_get(context=self)
         return packageModel
 
