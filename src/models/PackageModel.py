@@ -79,7 +79,7 @@ class SetExecutor(Config):
     field: Literal["option"] = "option"
 
     class Config:
-        title = "Package"
+        title = "Set"
         json_schema_extra = {
             "target": {
                 "value": 0
@@ -107,7 +107,7 @@ class GetExecutor(Config):
     field: Literal["option"] = "option"
 
     class Config:
-        title = "Package"
+        title = "Get"
         json_schema_extra = {
             "target": {
                 "value": 0
@@ -123,7 +123,7 @@ class ConfigExecutor(Config):
     """
 
     name: Literal["ConfigExecutor"] = "ConfigExecutor"
-    value: Union[SetExecutor, GetExecutor]
+    value: Union[GetExecutor, SetExecutor]
     type: Literal["executor"] = "executor"
     field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
     restart: Literal[True] = True
