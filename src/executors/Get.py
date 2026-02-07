@@ -4,7 +4,6 @@ import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../../../'))
 
-from sdks.novavision.src.base.redis import RedisDB
 from sdks.novavision.src.base.component import Component
 from sdks.novavision.src.helper.executor import Executor
 from components.Memory.src.utils.response import build_response_get
