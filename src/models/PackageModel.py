@@ -4,103 +4,63 @@ from typing import List, Optional, Union, Literal
 from sdks.novavision.src.base.model import Package, Image, Inputs, Configs, Outputs, Response, Request, Output, Input, Config
 
 
-class InputImage(Input):
-    name: Literal["inputImage"] = "inputImage"
-    value: Union[List[Image], Image]
+class InputData(Output):
+    name: Literal["inputData"] = "inputData"
+    value: Union[list, dict]
     type: str = "object"
 
-    @validator("type", pre=True, always=True)
-    def set_type_based_on_value(cls, value, values):
-        value = values.get('value')
-        if isinstance(value, Image):
-            return "object"
-        elif isinstance(value, list):
-            return "list"
-
     class Config:
-        title = "Image"
+        title = "Data"
 
 
-class OutputImage(Output):
-    name: Literal["outputImage"] = "outputImage"
-    value: Union[List[Image],Image]
+class OutputData(Output):
+    name: Literal["outputData"] = "outputData"
+    value: Union[list, dict]
     type: str = "object"
 
-    @validator("type", pre=True, always=True)
-    def set_type_based_on_value(cls, value, values):
-        value = values.get('value')
-        if isinstance(value, Image):
-            return "object"
-        elif isinstance(value, list):
-            return "list"
-
     class Config:
-        title = "Image"
+        title = "Data"
 
 
-class KeepSideFalse(Config):
-    name: Literal["False"] = "False"
-    value: Literal[False] = False
-    type: Literal["bool"] = "bool"
-    field: Literal["option"] = "option"
-
-    class Config:
-        title = "Disable"
-
-
-class KeepSideTrue(Config):
-    name: Literal["True"] = "True"
-    value: Literal[True] = True
-    type: Literal["bool"] = "bool"
-    field: Literal["option"] = "option"
-
-    class Config:
-        title = "Enable"
-
-
-class KeepSideBBox(Config):
+class ConfigKey(Config):
     """
-        Rotate image without catting off sides.
+        ...
     """
-    name: Literal["KeepSide"] = "KeepSide"
-    value: Union[KeepSideTrue, KeepSideFalse]
-    type: Literal["object"] = "object"
-    field: Literal["dropdownlist"] = "dropdownlist"
-
-    class Config:
-        title = "Keep Sides"
-
-
-class Degree(Config):
-    """
-        Positive angles specify counterclockwise rotation while negative angles indicate clockwise rotation.
-    """
-    name: Literal["Degree"] = "Degree"
-    value: int = Field(ge=-359.0, le=359.0,default=0)
-    type: Literal["number"] = "number"
+    name: Literal["configKey"] = "configKey"
+    value: str = ""
+    type: Literal["string"] = "string"
     field: Literal["textInput"] = "textInput"
-    placeHolder: Literal["[-359, 359]"] = "[-359, 359]"
 
     class Config:
-        title = "Angle"
+        title = "Key"
+        json_schema_extra = {
+            "shortDescription": "..."
+        }
 
 
-class PackageInputs(Inputs):
-    inputImage: InputImage
+class SetInputs(Configs):
+    inputData: InputData
 
 
-class PackageConfigs(Configs):
-    degree: Degree
-    drawBBox: KeepSideBBox
+class SetConfigs(Configs):
+    configKey: ConfigKey
 
 
-class PackageOutputs(Outputs):
-    outputImage: OutputImage
+class SetOutputs(Outputs):
+    outputData: OutputData
 
 
-class PackageRequest(Request):
-    inputs: Optional[PackageInputs]
-    configs: PackageConfigs
+class GetConfigs(Configs):
+    configKey: ConfigKey
+
+
+class GetOutputs(Outputs):
+    outputData: OutputData
+
+
+class SetRequest(Request):
+    inputs: Optional[SetInputs]
+    configs: SetConfigs
 
     class Config:
         json_schema_extra = {
@@ -108,13 +68,41 @@ class PackageRequest(Request):
         }
 
 
-class PackageResponse(Response):
-    outputs: PackageOutputs
+class SetResponse(Response):
+    outputs: SetOutputs
 
 
-class PackageExecutor(Config):
-    name: Literal["Package"] = "Package"
-    value: Union[PackageRequest, PackageResponse]
+class SetExecutor(Config):
+    name: Literal["Set"] = "Set"
+    value: Union[SetRequest, SetResponse]
+    type: Literal["object"] = "object"
+    field: Literal["option"] = "option"
+
+    class Config:
+        title = "Package"
+        json_schema_extra = {
+            "target": {
+                "value": 0
+            }
+        }
+
+
+class GetRequest(Request):
+    configs: GetConfigs
+
+    class Config:
+        json_schema_extra = {
+            "target": "configs"
+        }
+
+
+class GetResponse(Response):
+    outputs: GetOutputs
+
+
+class GetExecutor(Config):
+    name: Literal["Get"] = "Get"
+    value: Union[GetRequest, GetResponse]
     type: Literal["object"] = "object"
     field: Literal["option"] = "option"
 
@@ -128,16 +116,21 @@ class PackageExecutor(Config):
 
 
 class ConfigExecutor(Config):
+    """
+        Select the filtering mode:
+        'Zone' for geometric filtering (ROI/IOU), 'Data' for expression-based filtering,
+        'Delta' for change detection filtering, or 'Overlap' for spatial overlap filtering.
+    """
+
     name: Literal["ConfigExecutor"] = "ConfigExecutor"
-    value: Union[PackageExecutor]
+    value: Union[SetExecutor, GetExecutor]
     type: Literal["executor"] = "executor"
     field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
+    restart: Literal[True] = True
 
     class Config:
-        title = "Task"
-        json_schema_extra = {
-            "target": "value"
-        }
+        title = "Mode"
+        json_schema_extra = {"shortDescription": "Memory Method"}
 
 
 class PackageConfigs(Configs):
@@ -147,4 +140,4 @@ class PackageConfigs(Configs):
 class PackageModel(Package):
     configs: PackageConfigs
     type: Literal["component"] = "component"
-    name: Literal["Package"] = "Package"
+    name: Literal["Memory"] = "Memory"
