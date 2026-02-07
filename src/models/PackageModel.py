@@ -1,10 +1,10 @@
 
 from pydantic import Field, validator
 from typing import List, Optional, Union, Literal
-from sdks.novavision.src.base.model import Package, Image, Inputs, Configs, Outputs, Response, Request, Output, Input, Config
+from sdks.novavision.src.base.model import Package, Configs, Outputs, Response, Request, Output, Input, Config
 
 
-class InputData(Output):
+class InputData(Input):
     name: Literal["inputData"] = "inputData"
     value: Union[list, dict]
     type: str = "object"
@@ -117,9 +117,7 @@ class GetExecutor(Config):
 
 class ConfigExecutor(Config):
     """
-        Select the filtering mode:
-        'Zone' for geometric filtering (ROI/IOU), 'Data' for expression-based filtering,
-        'Delta' for change detection filtering, or 'Overlap' for spatial overlap filtering.
+        (Description) ...
     """
 
     name: Literal["ConfigExecutor"] = "ConfigExecutor"
@@ -130,7 +128,7 @@ class ConfigExecutor(Config):
 
     class Config:
         title = "Mode"
-        json_schema_extra = {"shortDescription": "Memory Method"}
+        json_schema_extra = {"shortDescription": "..."}
 
 
 class PackageConfigs(Configs):
