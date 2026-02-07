@@ -22,6 +22,7 @@ class Get(Component):
 
     def run(self):
         print(self.redis_db.redis_get_flag(self.key))
+        self.data = ["a"]
         packageModel = build_response_get(context=self)
         return packageModel
 
