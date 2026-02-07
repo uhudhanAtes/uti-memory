@@ -1,6 +1,7 @@
 
 import os
 import sys
+import json
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../../../../'))
 
@@ -20,9 +21,16 @@ class Get(Component):
     def bootstrap(config: dict) -> dict:
         return {}
 
+    def try_parse_json(self, value):
+        if value is None:
+            return None
+        try:
+            return json.loads(value)
+        except (json.JSONDecodeError, TypeError):
+            return value
+
     def run(self):
-        print(self.redis_db.redis_get_flag(self.key))
-        self.data = ["a"]
+        self.data = self.try_parse_json(self.redis_db.redis_get_flag(self.key))
         packageModel = build_response_get(context=self)
         return packageModel
 

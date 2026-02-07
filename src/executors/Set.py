@@ -14,7 +14,7 @@ class Set(Component):
     def __init__(self, request, bootstrap):
         super().__init__(request, bootstrap)
         self.request.model = PackageModel(**(self.request.data))
-        self.input_data = self.request.get_param("input_data")
+        self.input_data = self.request.get_param("inputData")
         self.key = self.request.get_param("configKey")
 
     @staticmethod
@@ -23,7 +23,6 @@ class Set(Component):
 
     def run(self):
         a = self.redis_db.redis_set_flag(self.key, self.input_data)
-        print(a)
         self.data = ["a"]
         packageModel = build_response_set(context=self)
         return packageModel
