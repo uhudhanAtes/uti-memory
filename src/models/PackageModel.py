@@ -24,7 +24,11 @@ class OutputData(Output):
 
 class ConfigKey(Config):
     """
-        ...
+        Specify the Redis key to be used for the operation.
+
+        This key identifies the data in Redis.
+        - In Get mode, the value stored under this key will be retrieved.
+        - In Set mode, the provided value will be stored using this key.
     """
     name: Literal["configKey"] = "configKey"
     value: str = ""
@@ -34,7 +38,7 @@ class ConfigKey(Config):
     class Config:
         title = "Key"
         json_schema_extra = {
-            "shortDescription": "..."
+            "shortDescription": "Redis Key"
         }
 
 
@@ -117,9 +121,14 @@ class GetExecutor(Config):
 
 class ConfigExecutor(Config):
     """
-        (Description) ...
-    """
+        Select the Redis operation mode.
 
+        - Get: Reads the value stored under the given Redis key.
+        - Set: Writes a new value to the given Redis key.
+
+        Changing this mode determines whether the package will fetch data from Redis
+        or store data into Redis. Switching the mode requires restarting the executor.
+    """
     name: Literal["ConfigExecutor"] = "ConfigExecutor"
     value: Union[GetExecutor, SetExecutor]
     type: Literal["executor"] = "executor"
@@ -128,7 +137,9 @@ class ConfigExecutor(Config):
 
     class Config:
         title = "Mode"
-        json_schema_extra = {"shortDescription": "..."}
+        json_schema_extra = {
+            "shortDescription": "Get or Set"
+        }
 
 
 class PackageConfigs(Configs):
