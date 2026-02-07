@@ -15,7 +15,7 @@ class Set(Component):
         super().__init__(request, bootstrap)
         self.request.model = PackageModel(**(self.request.data))
         self.input_data = self.request.get_param("input_data")
-        self.key = self.request.get_param("key")
+        self.key = self.request.get_param("configKey")
 
     @staticmethod
     def bootstrap(config: dict) -> dict:
